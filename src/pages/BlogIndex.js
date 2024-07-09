@@ -8,6 +8,7 @@ import Header from "components/headers/light.js";
 import Footer from "components/footers/FiveColumnWithInputForm.js";
 import { SectionHeading } from "components/misc/Headings";
 import { PrimaryButton } from "components/misc/Buttons";
+import { Link } from "react-router-dom";
 
 const HeadingRow = tw.div`flex`;
 const Heading = tw(SectionHeading)`text-gray-900`;
@@ -65,34 +66,33 @@ export default ({ posts }) => {
           </HeadingRow>
           <Posts>
             {posts.data.slice(0, visible).map((post, index) => {
-              
               const imageUrl = post.attributes.strapi.data[0]?.attributes.url
                 ? `http://34.221.6.26:1337${post.attributes.strapi.data[0].attributes.url}`
                 : null;
 
-              
               console.log('Constructed Image URL:', imageUrl);
 
-              
               if (!imageUrl) {
                 console.error('Image URL is not correctly formed for post:', post);
               }
 
               return (
                 <PostContainer key={index} featured={post.featured}>
-                  <Post className="group" as="a" href={post.url}>
-                    {imageUrl ? (
-                      <Image imageSrc={imageUrl} alt={`Image for ${post.attributes.strapiapp}`} />
-                    ) : (
-                      <p>Image not available</p>
-                    )}
-                    <Info>
-                      <Category>{post.category}</Category>
-                      <CreationDate>{post.attributes.publishedAt}</CreationDate>
-                      <Title>{post.attributes.strapiapp}</Title>
-                      {post.featured && post.description && <Description>{post.description}</Description>}
-                    </Info>
-                  </Post>
+                  <Link to={`/blog/${post.id}`}>
+                    <Post className="group">
+                      {imageUrl ? (
+                        <Image imageSrc={imageUrl} alt={`Image for ${post.attributes.strapiapp}`} />
+                      ) : (
+                        <p>Image not available</p>
+                      )}
+                      <Info>
+                        <Category>{post.attributes.category}</Category>
+                        <CreationDate>{post.attributes.publishedAt}</CreationDate>
+                        <Title>{post.attributes.strapiapp}</Title>
+                        {post.featured && post.attributes.description && <Description>{post.attributes.description}</Description>}
+                      </Info>
+                    </Post>
+                  </Link>
                 </PostContainer>
               );
             })}
